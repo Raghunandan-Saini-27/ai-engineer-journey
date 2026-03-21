@@ -4,11 +4,10 @@ import pandas as pd
 
 url="https://realpython.github.io/fake-jobs/"
 response=requests.get(url)
-
 soup=BeautifulSoup(response.text,"html.parser")
 
 items=soup.find(id="ResultsContainer")
-job_elements=items.findAll("div",class_="card-content")
+job_elements=items.find_all("div",class_="card-content")
 all_jobs=[]
 
 for job in job_elements:
