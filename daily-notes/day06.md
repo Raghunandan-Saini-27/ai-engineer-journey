@@ -14,4 +14,5 @@ Used SQLAlchemy ORM with FastAPI.
 Built multi-page scraper.
 
 ## Problems Faced
-(write here)
+
+ >_<
