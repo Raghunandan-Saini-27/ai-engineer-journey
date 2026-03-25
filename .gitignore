@@ -1,0 +1,19 @@
+# Environments
+.venv/
+venv/
+
+# Python Cache
+__pycache__/
+*.pyc
+
+# Database (Keep your data private!)
+*.db
+*.sqlite
+
+# IDE settings
+.vscode/
+
+# C++ Compiled files
+*.exe
+*.out
+*.o
