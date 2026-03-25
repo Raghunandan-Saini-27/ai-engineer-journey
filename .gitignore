@@ -9,6 +9,7 @@ __pycache__/
 # Database (Keep your data private!)
 *.db
 *.sqlite
+.env
 
 # IDE settings
 .vscode/
