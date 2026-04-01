@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from database.db import get_all_jobs
+from typing import Optional
 
 app=FastAPI()
 
@@ -16,11 +17,24 @@ def jobs():
 			job_list.append(item["title"])
 	return {"jobs":job_list}
 
-@app.get("/jobs/python")
-def jobs_python():
-	python_jobs=get_all_jobs()
+@app.get("/jobs/search/")
+def jobs_search_by_name(keyword :str):
+	jobs=get_all_jobs()
+	keyword=keyword.lower()
 	job_list=[]
-	for item in python_jobs:
-		if "Python" in item.get("title"):
-			job_list.append(item["title"])			
+	for item in jobs:
+		title = item.get("title", "").lower()
+		if keyword in title:
+			job_list.append(item)			
 	return {"jobs":job_list}
+
+@app.get("/jobs/location/")
+def jobs_search_by_location(location :str):
+	jobs=get_all_jobs()
+	location=location.lower()
+	jobs_list=[]
+	for item in jobs:
+		job_loc=item.get("location", "").lower()
+		if location in job_loc:
+			jobs_list.append(item)
+	return {"jobs":jobs_list}

@@ -1,7 +1,5 @@
 import requests 
 from bs4 import BeautifulSoup
-import sys
-import os
 from database.db import create_jobs_table, insert_job
 
 

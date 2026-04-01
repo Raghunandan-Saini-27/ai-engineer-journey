@@ -12,14 +12,14 @@ def create_jobs_table():		#Creating table named jobs
 				title TEXT,
 				company TEXT,
 				location TEXT,
-				link TEXT)""")
+				link TEXT UNIQUE)""")
 	conn.commit()
 	conn.close()
 
 def insert_job(job):		#Adding job(title,company,location,link) 
 	conn=sqlite3.connect(DB_PATH,check_same_thread=False)
 	cursor=conn.cursor()
-	cursor.executemany("""INSERT INTO jobs(title,company,location,link) VALUES(:title, :company, :location, :link)""",job)
+	cursor.executemany("""INSERT OR IGNORE INTO jobs(title,company,location,link) VALUES(:title, :company, :location, :link)""",job)
 	conn.commit()
 	conn.close()
 
