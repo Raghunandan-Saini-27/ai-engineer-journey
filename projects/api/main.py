@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from database.db import get_all_jobs
+from database.db import get_all_jobs,search_jobs_by_title
 from typing import Optional
 
 app=FastAPI()
@@ -9,24 +9,21 @@ def home():
 	return {"message":"API working sucessfully."}
 
 @app.get("/jobs")
-def jobs():
-	all_data=get_all_jobs()
-	job_list=[]
-	for item in all_data:
-		if item.get("title"):  # Check if 'job' key exists and is not empty/None
-			job_list.append(item["title"])
-	return {"jobs":job_list}
+def jobs(page: int=1,limit: int=10):
+	# Prevent negative pages
+    if page < 1:
+        page = 1
+        
+    offset = (page - 1) * limit
+    
+    # Only fetch what is needed
+    job_titles = get_all_jobs(limit, offset)
+    
+    return {"jobs": job_titles}
 
-@app.get("/jobs/search/")
-def jobs_search_by_name(keyword :str):
-	jobs=get_all_jobs()
-	keyword=keyword.lower()
-	job_list=[]
-	for item in jobs:
-		title = item.get("title", "").lower()
-		if keyword in title:
-			job_list.append(item)			
-	return {"jobs":job_list}
+@app.get("/jobs/search")
+def jobs_search(keyword: str):
+    return {"jobs": search_jobs_by_title(keyword)}
 
 @app.get("/jobs/location/")
 def jobs_search_by_location(location :str):

@@ -23,12 +23,33 @@ def insert_job(job):		#Adding job(title,company,location,link)
 	conn.commit()
 	conn.close()
 
+def get_all_jobs(limit: int = None, offset: int = 0):
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
 
-def get_all_jobs():			#Getting entire table fetched
-	conn=sqlite3.connect(DB_PATH,check_same_thread=False)
-	conn.row_factory = sqlite3.Row
-	cursor=conn.cursor()
-	cursor.execute("SELECT * FROM jobs")
-	rows=cursor.fetchall()
-	jobs_list = [dict(row) for row in rows]
-	return jobs_list
+    if limit:
+        query = "SELECT * FROM jobs LIMIT ? OFFSET ?"
+        cursor.execute(query, (limit, offset))
+    else:
+        query = "SELECT * FROM jobs"
+        cursor.execute(query)
+
+    rows = cursor.fetchall()
+    jobs_list = [dict(row) for row in rows]
+
+    conn.close()
+    return jobs_list
+
+def search_jobs_by_title(keyword: str):
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    query = "SELECT * FROM jobs WHERE LOWER(title) LIKE ?"
+    cursor.execute(query, (f"%{keyword.lower()}%",))
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    return [dict(row) for row in rows]
