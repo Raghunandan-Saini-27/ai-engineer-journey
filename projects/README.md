@@ -3,6 +3,7 @@
 ## 🚀 Overview
 
 AI-powered backend system that collects, stores, and serves job listings through APIs.
+Now includes a rule-based recommendation engine for ranking job listings.
 
 This project simulates a real-world data pipeline:
 

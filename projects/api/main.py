@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from database.db import get_all_jobs,search_jobs_by_location,search_jobs_by_title
-from typing import Optional
+from api.services import get_ranked_jobs
 
 app=FastAPI()
 
@@ -28,3 +28,7 @@ def jobs_search(keyword: str):
 @app.get("/jobs/location")
 def jobs_search_by_location(location: str):
     return {"jobs": search_jobs_by_location(location)}
+
+@app.get("/jobs/ranked")
+def ranked_jobs(keyword : str):
+    return get_ranked_jobs(keyword)

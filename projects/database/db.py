@@ -16,10 +16,10 @@ def create_jobs_table():		#Creating table named jobs
 	conn.commit()
 	conn.close()
 
-def insert_job(job):		#Adding job(title,company,location,link) 
+def insert_job(jobs:list):		#Adding job(title,company,location,link) 
 	conn=sqlite3.connect(DB_PATH,check_same_thread=False)
 	cursor=conn.cursor()
-	cursor.executemany("""INSERT OR IGNORE INTO jobs(title,company,location,link) VALUES(:title, :company, :location, :link)""",job)
+	cursor.executemany("""INSERT OR IGNORE INTO jobs(title,company,location,link) VALUES(:title, :company, :location, :link)""",jobs)
 	conn.commit()
 	conn.close()
 
@@ -28,7 +28,7 @@ def get_all_jobs(limit: int = None, offset: int = 0):
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
-    if limit:
+    if limit is not None:
         query = "SELECT * FROM jobs LIMIT ? OFFSET ?"
         cursor.execute(query, (limit, offset))
     else:
