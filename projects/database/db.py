@@ -53,3 +53,16 @@ def search_jobs_by_title(keyword: str):
     conn.close()
 
     return [dict(row) for row in rows]
+
+def search_jobs_by_location(location: str):
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    query = "SELECT * FROM jobs WHERE LOWER(location) LIKE ?"
+    cursor.execute(query, (f"%{location.lower()}%",))
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    return [dict(row) for row in rows]

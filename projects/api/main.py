@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from database.db import get_all_jobs,search_jobs_by_title
+from database.db import get_all_jobs,search_jobs_by_location,search_jobs_by_title
 from typing import Optional
 
 app=FastAPI()
@@ -25,13 +25,6 @@ def jobs(page: int=1,limit: int=10):
 def jobs_search(keyword: str):
     return {"jobs": search_jobs_by_title(keyword)}
 
-@app.get("/jobs/location/")
-def jobs_search_by_location(location :str):
-	jobs=get_all_jobs()
-	location=location.lower()
-	jobs_list=[]
-	for item in jobs:
-		job_loc=item.get("location", "").lower()
-		if location in job_loc:
-			jobs_list.append(item)
-	return {"jobs":jobs_list}
+@app.get("/jobs/location")
+def jobs_search_by_location(location: str):
+    return {"jobs": search_jobs_by_location(location)}
