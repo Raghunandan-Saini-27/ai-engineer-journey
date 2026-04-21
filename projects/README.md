@@ -2,12 +2,38 @@
 
 ## 🚀 Overview
 
-AI-powered backend system that collects, stores, and serves job listings through APIs.
-Now includes a rule-based recommendation engine for ranking job listings.
-
 This project simulates a real-world data pipeline:
 
 * Scraping → Database → API → Client
+
+* AI-powered backend system that collects, stores, and serves job listings through APIs.
+
+* Now includes a rule-based recommendation engine for ranking job listings.
+
+🔥 Feature: Semantic Job Search
+
+* The platform now supports machine learning–based job ranking using TF-IDF and cosine similarity.
+
+🔥 Improvements
+
+* Text normalization using regex cleaning
+
+* Stopwords removal for better relevance
+
+* Vocabulary control using max_features
+
+* Noise reduction using min_df
+
+* Consistent preprocessing across all ranking systems
+
+## 🧠 Result
+
+* More accurate job matching
+
+* Cleaner and faster vector processing
+
+* Improved semantic search quality
+
 
 ---
 
