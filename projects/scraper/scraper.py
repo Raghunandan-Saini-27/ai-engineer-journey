@@ -1,6 +1,7 @@
 import requests 
 from bs4 import BeautifulSoup
 from database.db import create_jobs_table, insert_job
+from api.services import refresh_vectors
 
 
 url="https://realpython.github.io/fake-jobs/"
@@ -23,3 +24,5 @@ for in_job in job_cards:
 			 "link":link})
 	print(f"Job :{title} | Company :{company} |Location :{location} | Link :{link}")
 insert_job(job)
+
+refresh_vectors()

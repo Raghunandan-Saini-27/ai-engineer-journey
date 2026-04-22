@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from database.db import get_all_jobs,search_jobs_by_location,search_jobs_by_title
-from api.services import get_ranked_jobs,get_ranked_jobs_ml,intialize_vectors
+from api.services import get_ranked_jobs,get_ranked_jobs_ml,intialize_vectors,refresh_vectors
 
 app=FastAPI()
 
@@ -40,3 +40,8 @@ def ranked_jobs(keyword : str):
 @app.get("/jobs/ranked-ml")
 def ranked_ml_jobs(keyword:str):
      return get_ranked_jobs_ml(keyword)
+
+@app.post("/jobs/refresh")
+def refresh():
+     refresh_vectors()
+     return {"message":"Vectors refreshed successfully."}

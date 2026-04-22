@@ -96,3 +96,5 @@ def get_ranked_jobs_ml(keyword:str):
 
     return result[:10]
 
+def refresh_vectors():
+    intialize_vectors()
