@@ -3,6 +3,11 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import re
 
+vectorizer=None
+job_vectors=None
+job_cache=None
+
+
 def clean_text(text):
     text=text.strip().lower()
     text=re.sub(r"[^a-zA-Z0-9 ]", "",text)
@@ -48,37 +53,46 @@ def score_job(job, keyword):
 
     return score
 
-
-def get_ranked_jobs_ml(keyword:str):
+def intialize_vectors():
     jobs=get_all_jobs()
-    job_copy=[job.copy() for job in jobs]
+    jobs_text=[]
+    for job in jobs:
+        raw_text=f"{job['title']} {job['company']} {job['location']}"
+        cleaned_text=clean_text(raw_text)
+        jobs_text.append(cleaned_text)
+
+    MAX_FEATURES=500
+    global vectorizer,job_vectors,job_cache
+    vectorizer=TfidfVectorizer(stop_words="english",max_features=MAX_FEATURES,min_df=2)
+    vectorizer.fit(jobs_text)
+
+    job_vectors=vectorizer.transform(jobs_text)
+    job_cache=jobs
+          
+def get_ranked_jobs_ml(keyword:str):
+    global vectorizer, job_vectors, jobs_cache
+
+    jobs=get_all_jobs()
+    jobs_cache=jobs
 
     keyword=clean_text(keyword)
-    if not keyword:
+    if not keyword :
         return []
     
-    job_texts=[]
-    for job in job_copy:
-        raw_text = f"{job['title']} {job['company']} {job['location']}"
-        cleaned_text=clean_text(raw_text)
-        job_texts.append(cleaned_text)
-    
-    job_texts.insert(0,keyword)
+    query_vec=vectorizer.transform([keyword])
 
-    MAX_FEATURES=100
-    vectorizer=TfidfVectorizer(stop_words="english",max_features=MAX_FEATURES,min_df=2)
-    vectors=vectorizer.fit_transform(job_texts)
-    
-    similarity=cosine_similarity(vectors[0:1],vectors[1:])
+    similarity=cosine_similarity(query_vec,job_vectors)
+
     result=[]
-
-    for i,job in enumerate(job_copy):
-        
+    for i,job in enumerate(jobs_cache):
         score=similarity[0][i]
-        if score>0: 
-            job["score"]=float(score)
-            result.append(job)
 
-    result.sort(key=lambda x:x["score"],reverse=True)
+        if score>0:
+            job_copy=job.copy()
+            job_copy['score']=float(score)
+            result.append(job_copy)
+
+    result.sort(key=lambda x:x['score'],reverse=True)
 
     return result[:10]
+

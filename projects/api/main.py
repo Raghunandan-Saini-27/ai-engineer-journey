@@ -1,8 +1,12 @@
 from fastapi import FastAPI
 from database.db import get_all_jobs,search_jobs_by_location,search_jobs_by_title
-from api.services import get_ranked_jobs,get_ranked_jobs_ml
+from api.services import get_ranked_jobs,get_ranked_jobs_ml,intialize_vectors
 
 app=FastAPI()
+
+@app.on_event("startup")
+def startup_event():
+    intialize_vectors()
 
 @app.get("/")
 def home():
