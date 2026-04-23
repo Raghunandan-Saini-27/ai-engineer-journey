@@ -35,23 +35,22 @@ def get_ranked_jobs(keyword: str):
     return result[:10]
 
 
-def score_job(job, keyword):
+def score_job(job,keyword):
     title = clean_text(job["title"])
     company = clean_text(job["company"])
     location = clean_text(job["location"])
+    rule_score = 0
+    for word in keyword:
+        if word in title:
+            rule_score += 2
 
-    score = 0
-    
-    if keyword in title:
-        score += 2
-
-    if keyword in company:
-        score += 1
+        if word in company:
+            rule_score += 1
         
-    if keyword in location:
-        score +=1
+        if word in location:
+            rule_score +=1
 
-    return score
+    return rule_score
 
 def intialize_vectors():
     jobs=get_all_jobs()
@@ -69,14 +68,15 @@ def intialize_vectors():
     job_vectors=vectorizer.transform(jobs_text)
     job_cache=jobs
           
-def get_ranked_jobs_ml(keyword:str):
-    global vectorizer, job_vectors, jobs_cache
-
+def get_ranked_jobs_hybrid(keyword:str):
+    global vectorizer, job_vectors, job_cache
+    
     jobs=get_all_jobs()
-    jobs_cache=jobs
+    job_cache=jobs
 
     keyword=clean_text(keyword)
-    if not keyword :
+    keywords=keyword.split()
+    if not keywords :
         return []
     
     query_vec=vectorizer.transform([keyword])
@@ -84,12 +84,14 @@ def get_ranked_jobs_ml(keyword:str):
     similarity=cosine_similarity(query_vec,job_vectors)
 
     result=[]
-    for i,job in enumerate(jobs_cache):
-        score=similarity[0][i]
-
-        if score>0:
+    for i,job in enumerate(job_cache):
+        ml_score=similarity[0][i]
+        rule_score=score_job(job,keywords)
+        final_score=(0.5*rule_score)+ml_score
+           
+        if final_score>0:
             job_copy=job.copy()
-            job_copy['score']=float(score)
+            job_copy['score']=float(final_score)
             result.append(job_copy)
 
     result.sort(key=lambda x:x['score'],reverse=True)

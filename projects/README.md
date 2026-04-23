@@ -26,6 +26,14 @@ This project simulates a real-world data pipeline:
 
 * Consistent preprocessing across all ranking systems
 
+* Dynamic Vector Updates
+
+🔥 Feature
+
+* Added ability to refresh vector representations when job data changes
+
+* Introduced system-level update mechanism for ML pipeline
+
 ## 🧠 Result
 
 * More accurate job matching
