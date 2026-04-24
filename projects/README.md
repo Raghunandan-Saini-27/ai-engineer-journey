@@ -34,6 +34,17 @@ This project simulates a real-world data pipeline:
 
 * Introduced system-level update mechanism for ML pipeline
 
+* Filtering + Ranking
+
+* Features:
+
+* Location-based filtering
+
+* Hybrid keyword ranking
+
+* Combined structured + semantic search
+
+
 ## 🧠 Result
 
 * More accurate job matching
