@@ -43,30 +43,40 @@ async function searchJobs()
 
 	showMessage("Searching...");
 	
-	const response=await fetch(url);
+	try{
+		const response=await fetch(url);
 
-	const jobs= await response.json()
+		const jobs= await response.json()
 
-	showMessage("")
+		results.innerHTML = "";
 
-	if(jobs.length===0)
-	{
-		showMessage("No Results found! Try another keyword.")
-	}
+		if(jobs.length===0)
+		{
+			showMessage("No Results found! Try another keyword.")
+		}
 
-	else{
+		else{
 	
-	for (const job of jobs)
-	{
-		const jobCard=createJobCard(job);
+		for (const job of jobs)
+		{
+			const jobCard=createJobCard(job);
 
-		results.appendChild(jobCard);
-	}
+			results.appendChild(jobCard);
+		}
 
-	console.log(jobs)
+		console.log(jobs)
 	
-	console.log(results)
-}
+		console.log(results)
+		}
+	}
+	catch(error)
+	{	
+		showMessage("")
+
+		console.error(error)
+
+		showMessage("Couldn't connect to the server.")
+	}
 }
 
 function showMessage(message)
