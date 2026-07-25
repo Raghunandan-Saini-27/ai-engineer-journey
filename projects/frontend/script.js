@@ -21,11 +21,25 @@ searchBox.addEventListener("keydown",function(event)
 	}
 });
 
+function searchCleaner(search_value)
+{
+	search_value=search_value.trim().toLowerCase();
+
+	return search_value;
+}
+
 async function searchJobs() 
 {
-	const query=searchBox.value;
+	const raw_query=searchBox.value;
 
-	const url=`http://127.0.0.1:8000/jobs/smart-search?query=${query}`;
+	const clean_query=searchCleaner(raw_query);
+
+	if(clean_query==="")
+	{
+		return showMessage("Please enter a valid query.")
+	}
+
+	const url=`http://127.0.0.1:8000/jobs/smart-search?query=${clean_query}`;
 
 	showMessage("Searching...");
 	
