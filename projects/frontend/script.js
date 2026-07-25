@@ -41,6 +41,8 @@ async function searchJobs()
 
 	const url=`http://127.0.0.1:8000/jobs/smart-search?query=${clean_query}`;
 
+	button.disabled=true;
+
 	showMessage("Searching...");
 	
 	try{
@@ -63,19 +65,17 @@ async function searchJobs()
 
 			results.appendChild(jobCard);
 		}
-
-		console.log(jobs)
-	
-		console.log(results)
 		}
 	}
 	catch(error)
-	{	
-		showMessage("")
-
+	{
 		console.error(error)
 
 		showMessage("Couldn't connect to the server.")
+	}
+	finally
+	{
+		button.disabled=false;
 	}
 }
 
