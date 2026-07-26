@@ -2,6 +2,10 @@ console.log("Javascript Connected Successfully!");
 
 const button = document.getElementById("search-btn");
 
+const DEFAULT_BUTTON_TEXT="Search";
+
+const SEARCHING_BUTTON_TEXT = "Searching...";
+
 const searchBox = document.getElementById("search-box");
 
 const results=document.getElementById("results");
@@ -21,51 +25,34 @@ searchBox.addEventListener("keydown",function(event)
 	}
 });
 
-function searchCleaner(search_value)
+function cleanSearchQuery(search_value)					//Cleans the query
 {
 	search_value=search_value.trim().toLowerCase();
 
 	return search_value;
 }
 
-async function searchJobs() 
+async function searchJobs()								//Main Controller
 {
-	const raw_query=searchBox.value;
+	const rawQuery=searchBox.value;
 
-	const clean_query=searchCleaner(raw_query);
+	const cleanQuery=cleanSearchQuery(rawQuery);
 
-	if(clean_query==="")
+	if(cleanQuery==="")
 	{
 		return showMessage("Please enter a valid query.")
 	}
 
-	const url=`http://127.0.0.1:8000/jobs/smart-search?query=${clean_query}`;
-
 	button.disabled=true;
+
+	button.textContent=SEARCHING_BUTTON_TEXT
 
 	showMessage("Searching...");
 	
 	try{
-		const response=await fetch(url);
+		const jobs=await fetchJobs(cleanQuery);
 
-		const jobs= await response.json()
-
-		results.innerHTML = "";
-
-		if(jobs.length===0)
-		{
-			showMessage("No Results found! Try another keyword.")
-		}
-
-		else{
-	
-		for (const job of jobs)
-		{
-			const jobCard=createJobCard(job);
-
-			results.appendChild(jobCard);
-		}
-		}
+		renderJobs(jobs);
 	}
 	catch(error)
 	{
@@ -76,15 +63,17 @@ async function searchJobs()
 	finally
 	{
 		button.disabled=false;
+
+		button.textContent=DEFAULT_BUTTON_TEXT;
 	}
 }
 
-function showMessage(message)
+function showMessage(message)					//Displays Messages
 {
 	results.innerHTML=`<p class=message>${message}<p>`;
 }
 
-function createJobCard(job)
+function createJobCard(job)						//Creates JobCard
 {
 	const card=document.createElement("div");
 
@@ -133,4 +122,40 @@ function createJobCard(job)
 	card.appendChild(job_description);
 
 	return card;
+}
+
+async function fetchJobs(query)					//Fetches job from the backend
+{
+	const url=`http://127.0.0.1:8000/jobs/smart-search?query=${query}`;
+	
+	const response=await fetch(url);
+
+	if(!response.ok)
+		{
+			throw new Error(`HTTP ${response.status}`);
+		}
+
+	const jobs=await response.json();	
+
+	return jobs;
+}
+
+function renderJobs(jobs)						//Renders the job for displaying on webpage
+{
+	results.innerHTML = "";
+
+		if(jobs.length===0)
+		{
+			showMessage("No Results found! Try another keyword.")
+		}
+
+		else{
+	
+		for (const job of jobs)
+		{
+			const jobCard=createJobCard(job);
+
+			results.appendChild(jobCard);
+		}
+		}
 }
