@@ -195,4 +195,3 @@ def smart_search(query:str):
         
         else :
             return {"error":"Please enter a valid query."}
-

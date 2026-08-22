@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api.services import smart_search,get_ranked_jobs_by_location_and_keyword_hybrid_score,initialize_vectors,refresh_vectors
+from ai.retrieval import retrieve_jobs
+from ai.chroma_store import search_job_vdb
 
 app=FastAPI()
 
@@ -11,10 +13,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.on_event("startup")
-def startup_event():
-    initialize_vectors()
 
 @app.get("/")
 def home():
@@ -31,4 +29,5 @@ def refresh():
 
 @app.get("/jobs/smart-search")
 def jobs_by_query(query:str):
-     return smart_search(query)
+     results=search_job_vdb(query)
+     return [{**result["job"],"score":result["score"]}for result in results]

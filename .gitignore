@@ -18,3 +18,5 @@ __pycache__/
 *.exe
 *.out
 *.o
+
+projects/data/chroma/
